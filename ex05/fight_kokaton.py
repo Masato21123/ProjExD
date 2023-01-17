@@ -17,7 +17,7 @@ class Screen:
         self.sfc.blit(self.bgi_sfc, self.bgi_rct) 
 
 
-class Bird:
+class Bird: #数値を3に変更
     key_delta = {
         pg.K_UP:    [0, -3],
         pg.K_DOWN:  [0, +3],
@@ -156,7 +156,7 @@ def check_bound(obj_rct, scr_rct):
         tate = -1
     return yoko, tate
 
-# 敵を全員倒したかをチェックする
+# 敵を全員倒したかをチェックする（村本)
 def check_clear(num_dead_enem, total_num_enem): # (死んだ敵の数, 敵の総数)
     if num_dead_enem == total_num_enem:
         return True
@@ -164,7 +164,7 @@ def check_clear(num_dead_enem, total_num_enem): # (死んだ敵の数, 敵の総
         return False
 
 
-def load_sound(file): #音楽が流れる
+def load_sound(file): #音楽が流れる(朱)
     if not pg.mixer:
         return None
     file = os.path.join(main_dir, "data", file)
@@ -178,7 +178,7 @@ def load_sound(file): #音楽が流れる
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 base_speed = 1
-#速度の算出
+#速度の算出(辻村)
 def plus_speed(speed):
     if speed == 0:
         speed = base_speed*random.choice([-3, -2, -1, 0, 1, 2, 3])
@@ -218,7 +218,7 @@ def main():
     bkd = Bomb((255, 0, 0), 10, (+1, +1), scr)
     bkd.update(scr)
     
-    # 爆弾（敵）を増やすraise_bomb
+    # 爆弾（敵）を増やすraise_bomb(村本）
     bombs = []
     colors = ["red", "green", "blue", "yellow", "magenta"]
     total_num_enem = len(colors) #敵の総数
@@ -263,7 +263,7 @@ def main():
     # テキスト描画
     clear_txt.blit([400, 400], scr)
 
-    # テキスト生成(こうかとんモードチェンジ時)
+    # テキスト生成(こうかとんモードチェンジ時)（村本）
     fight_txt = Text(None, 200, "FIGHTING MODE!!", (255, 0, 0))
 
     g_time = 0
@@ -304,12 +304,14 @@ def main():
             if bomb.enemy is True:
                 bomb.update(scr)
                 bomb.size_update(scr)
-            if kkt.rct.colliderect(bomb.rct) and (kkt.fight is False) and (bomb.enemy is True) and g_time > 2: #こうかとんが非戦闘モードかつ爆弾の敵判定がTrueなら
-                # こうかとんが爆弾に触れた位置で画像を切り替える
-                life -= 9
-                text_hit = Text(None, 160, "Hit!!", (0, 0, 0))
-                text_hit.blit([kkt.x, kkt.y], scr)
+            if kkt.rct.colliderect(bomb.rct) and (kkt.fight is False) and (bomb.enemy is True) and g_time > 2: #こうかとんが非戦闘モードかつ爆弾の敵判定がTrueかつg_timeが3以上の時
+                #相澤
+                life -= 9　#ダメージを受ける
+                text_hit = Text(None, 160, "Hit!!", (0, 0, 0))#岡本
+                text_hit.blit([kkt.x, kkt.y], scr)#岡本
                 if life < 0:
+                    
+                    # こうかとんが爆弾に触れた位置で画像を切り替える
                     end_kkt.rct.centerx = kkt.rct.centerx # こうかとんの位置と等しくする
                     end_kkt.rct.centery = kkt.rct.centery
                     end_kkt.blit(scr)
@@ -325,7 +327,7 @@ def main():
                 bomb.enemy = False # 触れたボムの敵判定をなくす（倒した）
                 num_dead_enem += 1    # 敵の死亡数を１増やす
 
-        # アイテムを使った時の処理
+        # アイテムを使った時の処理（村本）
         for item in items:
             if item.used is False: #　使用済みアイテムならアップデートしない
                 item.update(scr)
@@ -333,7 +335,7 @@ def main():
                 kkt.fight = True # こうかとん戦闘モードに移行
                 item.used = True # そのアイテムは使用済み判定に変わる
 
-        # 戦闘モードこうかとん残り時間処理
+        # 戦闘モードこうかとん残り時間処理（村本）
         if kkt.fight is True:
             fighting_time_left -= 1
             fight_time_txt = Text(None, 150, "fight", (255, 0, 0)) 
@@ -355,21 +357,21 @@ def main():
 
 
 
-        # 敵をすべて消した時の処理
+        # 敵をすべて消した時の処理（村本）
         if check_clear(num_dead_enem, total_num_enem): #こうかとんが非戦闘モードかつ爆弾の敵判定がTrueなら
                 end = time.time()
                 clear_time = end - bgn #クリアタイム
                 # テキストを描画
                 clear_txt.blit([350, 300], scr)
                 pg.display.update()
-                time.sleep(1)
+                time.sleep(1) #時間差で表示(相澤)
                 # テキスト生成（クリア）
                 time_txt = Text(None, 200, f"time:{round(clear_time)}", (0, 0, 0)) 
                 time_txt.blit([600, 500], scr)
                 pg.display.update()
                 time.sleep(3)
-                ##
                 return
+        #相澤    
         #時間を計測し、表示する
         time_txt = Text(None, 100, "time:"+str(int(g_time)),(0,0,0))
         time_txt.blit([50,30], scr)
