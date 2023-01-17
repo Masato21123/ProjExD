@@ -177,9 +177,9 @@ def load_sound(file): #音楽が流れる
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
+#速度の算出(辻村)
 base_speed = 1
-#速度の算出
-def plus_speed(speed):
+def plus_speed(speed): #速度が＋の場合
     if speed == 0:
         speed = base_speed*random.choice([-3, -2, -1, 0, 1, 2, 3])
     elif speed > 0:
@@ -188,7 +188,7 @@ def plus_speed(speed):
         speed -= base_speed
     return speed
 
-def minus_speed(speed):
+def minus_speed(speed): #速度が－の場合
     if speed == 0:
         pass
     elif speed > 0:
